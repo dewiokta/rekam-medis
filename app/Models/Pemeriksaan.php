@@ -10,7 +10,7 @@ class Pemeriksaan extends Model
     use HasFactory;
     protected $table ="pemeriksaans";
     protected $primarykey="id";
-    protected $fillable =["id","pendaftaran_id","pemeriksaan","diagnosa","jml_kunjungan","terapi","biaya_keterangan"];
+    protected $fillable =["id","pendaftaran_id","pemeriksaan","diagnosa","tekanan_darah","berat_badan","tinggi_badan","nadi","suhu","RR","cek_spo","obat","jml_kunjungan","terapi","biaya_keterangan"];
     public $timestamps;
 
     public function pendaftaran() 

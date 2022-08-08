@@ -28,7 +28,16 @@
               <th scope="col">Alamat</th>
               <th scope="col">keluhan</th>
               <th scope="col">Pemeriksaan</th>
+              <th scope="col">Tekanan Darah</th>
+              <th scope="col">Berat Badan</th>
+              <th scope="col">Tinggi Badan</th>
+              <th scope="col">Denyut Nadi</th>
+              <th scope="col">Suhu Badan</th>
+              <th scope="col">RR</th>
+              <th scope="col">Cek SPO</th>
               <th scope="col">Diagnosa</th>
+              <th scope="col">Obat</th>
+              <th scope="col">Detail Resep</th>
               <th scope="col">Jumlah Kunjungan</th>
               <th scope="col">Terapi</th>
               <th scope="col">Biaya dan Keterangan</th>
@@ -50,7 +59,28 @@
               <td>{{ $item -> keluhan }}</td>
               <!-- pemeriksaan -->
               <td>{{ $item -> pemeriksaan }}</td>
+              <td>{{ $item -> tekanan_darah }}</td>
+              <td>{{ $item -> berat_badan }}</td>
+              <td>{{ $item -> tinggi_badan }}</td>
+              <td>{{ $item -> nadi }}</td>
+              <td>{{ $item -> suhu }}</td>
+              <td>{{ $item -> RR }}</td>
+              <td>{{ $item -> cek_spo }}</td>
               <td>{{ $item -> diagnosa }}</td>
+              @if( $item->obat == null)
+              <td></td>
+              @endif
+              @if( $item->obat != null )
+              <td>
+                <?php 
+                $obat = json_decode($item->obat)
+                ?>
+                @foreach($obat as $obats)
+                {{$obats}},
+                @endforeach
+              </td>
+              @endif
+              <td>{{ $item -> detail_resep }}</td>
               <td>{{ $item -> jml_kunjungan }}</td>
               <td>{{ $item -> terapi }}</td>
               <td>{{ $item -> biaya_keterangan }}</td>

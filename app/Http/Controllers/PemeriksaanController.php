@@ -16,27 +16,34 @@ class PemeriksaanController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->has('search')){
-            $pemeriksaan = Pendaftaran::where('nama_pasien','LIKE','%'.$request->search.'%')
-            ->orderBy("id",'desc')
-            ->paginate(10);
-        }else{
-            $pemeriksaan = Pemeriksaan::join('pendaftarans','pendaftarans.id','=','pemeriksaans.pendaftaran_id')
-                ->select('pemeriksaans.*','pendaftarans.tanggal','pendaftarans.nama_pasien','pendaftarans.nik'
-                        ,'pendaftarans.kepala_keluarga','pendaftarans.alamat','pendaftarans.keluhan')
-                ->where('status','N')
-                ->orderBy("id",'desc')
+        if ($request->has('search')) {
+            $pemeriksaan = Pendaftaran::where('nama_pasien', 'LIKE', '%' . $request->search . '%')
+                ->orderBy("id", 'desc')
+                ->paginate(10);
+        } else {
+            $pemeriksaan = Pemeriksaan::join('pendaftarans', 'pendaftarans.id', '=', 'pemeriksaans.pendaftaran_id')
+                ->select(
+                    'pemeriksaans.*',
+                    'pendaftarans.tanggal',
+                    'pendaftarans.nama_pasien',
+                    'pendaftarans.nik',
+                    'pendaftarans.kepala_keluarga',
+                    'pendaftarans.alamat',
+                    'pendaftarans.keluhan'
+                )
+                ->where('status', 'N')
+                ->orderBy("id", 'desc')
                 ->paginate(10);
         }
-        
-         return view('dashboard.pemeriksaan.index', ['pemeriksaan' => $pemeriksaan]);
-          // $data = Pemeriksaan::join('pendaftarans','pendaftarans.id','=','pemeriksaans.pendaftaran_id')
+
+        return view('dashboard.pemeriksaan.index', ['pemeriksaan' => $pemeriksaan]);
+        // $data = Pemeriksaan::join('pendaftarans','pendaftarans.id','=','pemeriksaans.pendaftaran_id')
         //         ->select('pemeriksaans.*','pendaftarans.tanggal','pendaftarans.nama_pasien','pendaftarans.nik'
         //                 ,'pendaftarans.kepala_keluarga','pendaftarans.alamat','pendaftarans.keluhan')
         //         ->paginate(10);
-                //$pendaftaran = Pendaftaran::paginate(10);
-        
-        
+        //$pendaftaran = Pendaftaran::paginate(10);
+
+
     }
 
     /**
@@ -57,7 +64,6 @@ class PemeriksaanController extends Controller
      */
     public function store(Request $request)
     {
-        
     }
 
     /**
@@ -80,9 +86,8 @@ class PemeriksaanController extends Controller
     public function edit($id)
     {
         $pemeriksaan = Pemeriksaan::find($id);
-        
-        return view('dashboard.pemeriksaan.edit', ['data'=>$pemeriksaan]); 
-        
+
+        return view('dashboard.pemeriksaan.edit', ['data' => $pemeriksaan]);
     }
 
     /**
@@ -96,21 +101,30 @@ class PemeriksaanController extends Controller
     {
         $pemeriksaan = Pemeriksaan::find($id);
 
-        if($pemeriksaan=='selesai'){
-            $pemeriksaan->status='Y';
+        if ($pemeriksaan == 'selesai') {
+            $pemeriksaan->status = 'Y';
         } else {
-            $pemeriksaan->pemeriksaan=$request->pemeriksaan;
-            $pemeriksaan->diagnosa=$request->diagnosa;
-            $pemeriksaan->jml_kunjungan=$request->jml_kunjungan;
-            $pemeriksaan->terapi=$request->terapi;
-            $pemeriksaan->biaya_keterangan=$request->biaya_keterangan;
-            $pemeriksaan->status = 'N';    
+            $pemeriksaan->pemeriksaan = $request->pemeriksaan;
+            $pemeriksaan->tekanan_darah = $request->tekanan_darah;
+            $pemeriksaan->berat_badan = $request->berat_badan;
+            $pemeriksaan->tinggi_badan = $request->tinggi_badan;
+            $pemeriksaan->nadi = $request->nadi;
+            $pemeriksaan->suhu = $request->suhu;
+            $pemeriksaan->RR = $request->RR;
+            $pemeriksaan->cek_spo = $request->cek_spo;
+            $pemeriksaan->diagnosa = $request->diagnosa;
+            $pemeriksaan->detail_resep = $request->detail_resep;
+            $pemeriksaan->obat = json_encode($request->obat);
+            $pemeriksaan->jml_kunjungan = $request->jml_kunjungan;
+            $pemeriksaan->terapi = $request->terapi;
+            $pemeriksaan->biaya_keterangan = $request->biaya_keterangan;
+            $pemeriksaan->status = 'N';
         }
-        
-        
-        $pemeriksaan->save();
-        return redirect('/dashboard/pemeriksaan')->with('succsess','Data Saved');
+        // dd($request->all());
 
+        $pemeriksaan->save();
+
+        return redirect('/dashboard/pemeriksaan')->with('succsess', 'Data Saved');
     }
 
     /**
@@ -124,28 +138,34 @@ class PemeriksaanController extends Controller
         $data = Pemeriksaan::destroy($id);
         //$pends = Pendaftaran::destroy($id);
         return redirect()->route('pemeriksaan.index')->with(['success' => 'Data Berhasil Dihapus!']);
-        
-    
     }
-    public function done($id){
+    public function done($id)
+    {
         $pemeriksaan = Pemeriksaan::find($id);
-        $pemeriksaan-> status = 'Y';
-        $pemeriksaan-> save();
+        $pemeriksaan->status = 'Y';
+        $pemeriksaan->save();
 
         return redirect()->route('riwayat.index')->with(['success' => 'Data Berhasil Dihapus!']);
     }
 
-    public function pemeriksaanUmumPDF() {
-       
-        $data = Pemeriksaan::join('pendaftarans','pendaftarans.id','=','pemeriksaans.pendaftaran_id')
-                ->select('pemeriksaans.*','pendaftarans.tanggal','pendaftarans.nama_pasien','pendaftarans.nik'
-                        ,'pendaftarans.kepala_keluarga','pendaftarans.alamat','pendaftarans.keluhan')
-                ->where('status','Y')
-                ->orderBy("id",'desc')
-                ->get();
-        view()->share('data',$data);
+    public function pemeriksaanUmumPDF()
+    {
+
+        $data = Pemeriksaan::join('pendaftarans', 'pendaftarans.id', '=', 'pemeriksaans.pendaftaran_id')
+            ->select(
+                'pemeriksaans.*',
+                'pendaftarans.tanggal',
+                'pendaftarans.nama_pasien',
+                'pendaftarans.nik',
+                'pendaftarans.kepala_keluarga',
+                'pendaftarans.alamat',
+                'pendaftarans.keluhan'
+            )
+            ->where('status', 'Y')
+            ->orderBy("id", 'desc')
+            ->get();
+        view()->share('data', $data);
         $pdf = PDF::loadView('/dashboard/pemeriksaan/pemeriksaan-pdf')->setPaper('a4', 'landscape');
         return $pdf->download('Pemeriksaan Umum.pdf');
-        
-      }
+    }
 }

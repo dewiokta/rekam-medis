@@ -15,13 +15,19 @@ class PemeriksaanfreeController extends Controller
      */
     public function index()
     {
-        $data = Pemeriksaanfree::join('bpjs','bpjs.id','=','pemeriksaanfree.bpjs_id')
-                ->select('pemeriksaanfree.*','bpjs.tanggal','bpjs.nama_peserta','bpjs.nomer_peserta'
-                        ,'bpjs.kepala_keluarga','bpjs.alamat','bpjs.keluhan')
-                ->where('status','N')
-                ->orderBy("id",'desc')->paginate(10);
-        
-         return view('dashboard.pemeriksaanfree.index', ['pemeriksaanfree' => $data]);
+        $data = Pemeriksaanfree::join('bpjs', 'bpjs.id', '=', 'pemeriksaanfree.bpjs_id')
+            ->select(
+                'pemeriksaanfree.*',
+                'bpjs.tanggal',
+                'bpjs.nama_peserta',
+                'bpjs.nomer_peserta',
+                'bpjs.kepala_keluarga',
+                'bpjs.alamat',
+                'bpjs.keluhan'
+            )
+            ->orderBy("id", 'desc')->paginate(10);
+
+        return view('dashboard.pemeriksaanfree.index', ['pemeriksaanfree' => $data]);
     }
 
     /**
@@ -65,8 +71,8 @@ class PemeriksaanfreeController extends Controller
     public function edit($id)
     {
         $pemeriksaanfree = Pemeriksaanfree::find($id);
-        
-        return view('dashboard.pemeriksaanfree.edit', ['data'=>$pemeriksaanfree]); 
+
+        return view('dashboard.pemeriksaanfree.edit', ['data' => $pemeriksaanfree]);
     }
 
     /**
@@ -79,13 +85,22 @@ class PemeriksaanfreeController extends Controller
     public function update($id, Request $request)
     {
         $pemeriksaanfree = Pemeriksaanfree::find($id);
-        $pemeriksaanfree->pemeriksaan=$request->pemeriksaan;
-        $pemeriksaanfree->diagnosa=$request->diagnosa;
-        $pemeriksaanfree->jml_kunjungan=$request->jml_kunjungan;
-        $pemeriksaanfree->terapi=$request->terapi;
-        
+        $pemeriksaanfree->pemeriksaan = $request->pemeriksaan;
+        $pemeriksaanfree->tekanan_darah = $request->tekanan_darah;
+        $pemeriksaanfree->berat_badan = $request->berat_badan;
+        $pemeriksaanfree->tinggi_badan = $request->tinggi_badan;
+        $pemeriksaanfree->nadi = $request->nadi;
+        $pemeriksaanfree->suhu = $request->suhu;
+        $pemeriksaanfree->RR = $request->RR;
+        $pemeriksaanfree->cek_spo = $request->cek_spo;
+        $pemeriksaanfree->diagnosa = $request->diagnosa;
+        $pemeriksaanfree->obat = json_encode($request->obat);
+        $pemeriksaanfree->detail_resep = $request->detail_resep;
+        $pemeriksaanfree->jml_kunjungan = $request->jml_kunjungan;
+        $pemeriksaanfree->terapi = $request->terapi;
+
         $pemeriksaanfree->save();
-        return redirect('/dashboard/pemeriksaanfree')->with('succsess','Data Saved');
+        return redirect('/dashboard/pemeriksaanfree')->with('succsess', 'Data Saved');
     }
 
     /**
@@ -99,24 +114,32 @@ class PemeriksaanfreeController extends Controller
         $data = Pemeriksaanfree::destroy($id);
         return redirect()->route('pemeriksaanfree.index')->with(['success' => 'Data Berhasil Dihapus!']);
     }
-    public function selesai($id){
+    public function selesai($id)
+    {
         $pemeriksaanfree = Pemeriksaanfree::find($id);
-        $pemeriksaanfree-> status = 'Y';
-        $pemeriksaanfree-> save();
+        $pemeriksaanfree->status = 'Y';
+        $pemeriksaanfree->save();
 
         return redirect()->route('riwayatbpjs.index')->with(['success' => 'Data Berhasil Dihapus!']);
     }
-    public function pemeriksaanBpjsPDF() {
-       
-        $data = Pemeriksaanfree::join('bpjs','bpjs.id','=','pemeriksaanfree.bpjs_id')
-                ->select('pemeriksaanfree.*','bpjs.tanggal','bpjs.nama_peserta','bpjs.nomer_peserta'
-                        ,'bpjs.kepala_keluarga','bpjs.alamat','bpjs.keluhan')
-                ->where('status','Y')
-                ->orderBy("id",'desc')
-                ->get();
-        view()->share('data',$data);
+    public function pemeriksaanBpjsPDF()
+    {
+
+        $data = Pemeriksaanfree::join('bpjs', 'bpjs.id', '=', 'pemeriksaanfree.bpjs_id')
+            ->select(
+                'pemeriksaanfree.*',
+                'bpjs.tanggal',
+                'bpjs.nama_peserta',
+                'bpjs.nomer_peserta',
+                'bpjs.kepala_keluarga',
+                'bpjs.alamat',
+                'bpjs.keluhan'
+            )
+            ->where('status', 'Y')
+            ->orderBy("id", 'desc')
+            ->get();
+        view()->share('data', $data);
         $pdf = PDF::loadView('/dashboard/pemeriksaanfree/pemeriksaanBpjs-pdf')->setPaper('a4', 'landscape');
         return $pdf->download('Pemeriksaan Bpjs.pdf');
-        
-      }
+    }
 }

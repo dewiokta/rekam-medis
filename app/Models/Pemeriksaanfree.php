@@ -10,7 +10,7 @@ class Pemeriksaanfree extends Model
     use HasFactory;
     protected $table ="pemeriksaanfree";
     protected $primarykey="id";
-    protected $fillable =["id","bpjs_id","pemeriksaan","diagnosa","jml_kunjungan","terapi"];
+    protected $fillable =["id","bpjs_id","pemeriksaan","tekanan_darah","berat_badan","tinggi_badan","nadi","suhu","RR","cek_spo","obat","diagnosa","jml_kunjungan","terapi"];
     public $timestamps;
 
     public function bpjs() 
