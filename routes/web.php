@@ -15,6 +15,8 @@ use App\Exports\PendaftaranExport;
 use App\Exports\PemeriksaanExport;
 use App\Exports\PemeriksaanBpjsExport;
 use App\Exports\BpjsExport;
+use App\Http\Controllers\ObatController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -62,6 +64,10 @@ Route::resource('/dashboard/riwayat',RiwayatController::class)->middleware('auth
 Route::resource('/dashboard/riwayatbpjs',RiwayatBpjsController::class)->middleware('auth');
 Route::get('/dashboard/pemeriksaan/done/{id}', [PemeriksaanController::class, 'done'])->name('done')->middleware('auth');
 Route::get('/dashboard/pemeriksaanfree/selesai/{id}', [PemeriksaanfreeController::class, 'selesai'])->name('selesai')->middleware('auth');
+
+//obat
+Route::resource('/dashboard/obat',ObatController::class)->middleware('auth');
+
 //Export
 Route::get('export-csv-pendaftaran', function () {
     return Excel::download(new PendaftaranExport, 'pendaftaranUmum.csv');

@@ -18,16 +18,16 @@
                 <h5 class="modal-title" id="exampleModalLabel">Tambah Obat</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('pendaftaran.store') }}" method="post">
+            <form action="{{ route('obat.store') }}" method="post">
                 {{ csrf_field() }}
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Nama Obat</label>
-                        <input type="date" name="tanggal" class="form-control" placeholder="Tanggal Berobat" required>
+                        <input type="text" name="nama" class="form-control" placeholder="Nama Obat" required>
                     </div>
                     <div class="form-group">
                         <label>Harga Obat</label>
-                        <input type="text" name="nama_pasien" class="form-control" placeholder="Nama Lengkap" required>
+                        <input type="text" name="harga" class="form-control" placeholder="Harga Obat" required>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -38,9 +38,6 @@
         </div>
     </div>
 </div>
-</div>
-<a href="/export-csv-pendaftaran" target="_blank" class="btn btn-primary me-1">Download Excel</a>
-<a href="/export-pdf-pendaftaran" target="_blank" class="btn btn-primary me-1">Download Pdf</a>
 
 <div class="row justify-content-end">
     <div class="col-md-6">
@@ -59,35 +56,19 @@
         <thead>
             <tr>
                 <th scope="col">No</th>
-                <th scope="col">Tanggal</th>
-                <th scope="col">Nama Pasien</th>
-                <th scope="col">Kepala Keluarga</th>
-                <th scope="col">Nomer Identitas</th>
-                <th scope="col">Tanggal Lahir</th>
-                <th scope="col">Agama</th>
-                <th scope="col">Alamat</th>
-                <th scope="col">Nomer Telepon</th>
-                <th scope="col">Keluhan</th>
-                <th scope="col">Action</th>
-            </tr>
+                <th scope="col">Nama Obat</th>
+                <th scope="col">Harga Obat</th>
         </thead>
-        @if (count($pendaftaran) > 0)
-        @foreach($pendaftaran as $key=>$item)
+        @if (count($obat) > 0)
+        @foreach($obat as $key=>$item)
         <tbody>
             <tr>
                 <td>{{ $loop -> iteration}}</td>
-                <td>{{ $item -> tanggal }}</td>
-                <td>{{ $item -> nama_pasien }}</td>
-                <td>{{ $item -> kepala_keluarga }}</td>
-                <td>{{ $item -> nik }}</td>
-                <td>{{ $item -> tanggal_lahir }}</td>
-                <td>{{ $item -> agama }}</td>
-                <td>{{ $item -> alamat }}</td>
-                <td>{{ $item -> nomer_telepon }}</td>
-                <td>{{ $item -> keluhan }}</td>
+                <td>{{ $item -> nama }}</td>
+                <td>{{ $item -> harga }}</td>
                 <td>
-                    <form action="{{ route('pendaftaran.destroy',$item->id)  }}" method="post" onsubmit="return confirm('Yakin Hapus Data?')">
-                        <a class="btn btn-primary" href="{{ route('pendaftaran.edit',$item->id)  }}">Edit</a>
+                    <form action="{{ route('obat.destroy',$item->id)  }}" method="post" onsubmit="return confirm('Yakin Hapus Data?')">
+                        <a class="btn btn-primary" href="{{ route('obat.edit',$item->id)  }}">Edit</a>
                         @method('delete')
                         @csrf
                         <button type="submit" class="btn btn-danger">Hapus</button>
@@ -99,7 +80,7 @@
         @endif
 
     </table>
-    {{$pendaftaran->links()}}
+    {{$obat->links()}}
 </div>
 
 @endsection

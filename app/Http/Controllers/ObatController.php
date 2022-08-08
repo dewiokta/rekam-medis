@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Obat;
 use Illuminate\Http\Request;
 
 class ObatController extends Controller
@@ -11,9 +12,16 @@ class ObatController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if($request->has('search')){
+            $obat = Obat::where('nama','LIKE','%'.$request->search.'%')
+            ->orderBy("id",'desc')
+            ->paginate(5);
+        }else{
+            $obat = Obat::orderBy("id",'desc')->paginate(10);
+        }
+        return view ('dashboard.obat.index', compact('obat'));
     }
 
     /**
@@ -34,7 +42,15 @@ class ObatController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nama' => 'required',
+            'harga' => 'required',
+        ]);
+
+        Obat::create($validated);
+
+        // $user->save();
+        return redirect('/dashboard/obat')->with('succsess','Data Saved');
     }
 
     /**
@@ -56,7 +72,9 @@ class ObatController extends Controller
      */
     public function edit($id)
     {
-        //
+        $obat = Obat::find($id);
+        
+        return view('dashboard.obat.edit', ['data'=>$obat]); 
     }
 
     /**
@@ -68,7 +86,12 @@ class ObatController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $obat = Obat::find($id);
+        $obat->nama=$request->nama;
+        $obat->harga=$request->harga;
+
+        $obat->save();
+        return redirect('/dashboard/obat')->with('succsess','Data Saved');
     }
 
     /**
@@ -79,6 +102,7 @@ class ObatController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $obt = Obat::destroy($id);
+        return redirect()->route('obat.index')->with(['success' => 'Data Berhasil Dihapus!']);
     }
 }
